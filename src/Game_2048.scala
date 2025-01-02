@@ -4,16 +4,22 @@ import java.awt.event.{KeyAdapter, KeyEvent, MouseAdapter, MouseEvent}
 import java.awt.Color
 
 object Game_2048 extends App {
-  val gameWindow = new FunGraphics(600, 600, "2048", true)
+
+  val widthScreen = 600
+  val menuScreen = 100
+  val heightScreen = widthScreen + menuScreen
+  val gridSize = 4
+  val margin = 20
+  val padding = 20
+  val cellSize = (widthScreen - 2*margin) / gridSize
+  val gameWindow = new FunGraphics(widthScreen, heightScreen, "2048", true)
   val imageStop = new GraphicsBitmap("/res/stop.jpg")
+
   var pressedUp, pressedDown, pressedLeft, pressedRight = false
-  var offsetY = 0
-  var offsetX = 0
+  var direction = "none"
   var stop = false
-  var factor = 20
 
   gameWindow.setKeyManager(new KeyAdapter() {
-
     override def keyPressed(e: KeyEvent): Unit = {
       e.getKeyChar match {
         case 'a' => pressedLeft = true
@@ -47,35 +53,37 @@ object Game_2048 extends App {
         case _ =>
       }
     }
-
   })
-
   gameWindow.addMouseListener(new MouseAdapter() {
     override def mouseClicked(e: MouseEvent): Unit = {
       val event = e
       val posx = event.getX
       val posy = event.getY
-      //      println("posx" + posx)
-      //      println("posy" + posy)
-      if (posy < 215 && posx < 200) stop = true
+      //println("posx" + posx); println("posy" + posy);
+      if (posy < 100 && posx < 90) stop = true
     }
   })
+
+  def background(): Unit = {
+    gameWindow.clear(new Color(187, 173, 160)) // Fond en beige foncé
+    gameWindow.drawTransformedPicture(300, 50, 0, 1, imageStop)
+    gameWindow.setColor(new Color(205, 193, 180)) // Beige clair pour les cellules
+    for (x <- 0 until gridSize; y <- 0 until gridSize) {
+      gameWindow.drawFillRect(margin + (x * cellSize) + (padding / 2), menuScreen + margin + (y * cellSize) + (padding / 2), cellSize - padding, cellSize - padding)
+    }
+  }
 
   while (true) {
     if (stop) System.exit(0)
     else {
-      if (pressedDown) offsetY += 1
-      if (pressedUp) offsetY -= 1
-      if (pressedLeft) offsetX -= 1
-      if (pressedRight) offsetX += 1
+      if (pressedDown) direction = "down"
+      if (pressedUp) direction = "up"
+      if (pressedLeft) direction = "left"
+      if (pressedRight) direction = "right"
       gameWindow.frontBuffer.synchronized {
-        gameWindow.clear(Color.blue)
-        gameWindow.setColor(Color.red)
-        gameWindow.drawRect(250 + offsetX * factor, 250 + offsetY * factor, 75, 75)
-        gameWindow.drawTransformedPicture(100, 100, 0, 0.3, imageStop)
+        background()
       }
       gameWindow.syncGameLogic(60)
     }
   }
-
 }
