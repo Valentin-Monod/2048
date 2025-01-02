@@ -4,14 +4,15 @@ import java.awt.event.{KeyAdapter, KeyEvent, MouseAdapter, MouseEvent}
 import java.awt.Color
 
 object Game_2048 extends App {
-
+  // -------------------------------------------------------------------------------------------------------------------
+  // ------------------------------------------------------------------------------------------Déclarations de variables
   val widthScreen = 600
   val menuScreen = 100
   val heightScreen = widthScreen + menuScreen
   val gridSize = 4
   val margin = 20
   val padding = 20
-  val cellSize = (widthScreen - 2*margin) / gridSize
+  val cellSize = (widthScreen - 2 * margin) / gridSize
   val gameWindow = new FunGraphics(widthScreen, heightScreen, "2048", true)
   val imageStop = new GraphicsBitmap("/res/stop.jpg")
 
@@ -19,6 +20,18 @@ object Game_2048 extends App {
   var direction = "none"
   var stop = false
 
+  var backColor = new Color(187, 173, 160)
+  var caseColor = new Color(205, 193, 180)
+
+  var tab : Array[Array[Int]] = Array.ofDim(gridSize,gridSize)
+  var x = 3
+  var y = 0
+  tab(y)(x) = 2
+  // -------------------------------------------------------------------------------------------------------------------
+
+
+  // -------------------------------------------------------------------------------------------------------------------
+  // --------------------------------------------------------------------------------------------------Souris et Clavier
   gameWindow.setKeyManager(new KeyAdapter() {
     override def keyPressed(e: KeyEvent): Unit = {
       e.getKeyChar match {
@@ -63,16 +76,47 @@ object Game_2048 extends App {
       if (posy < 100 && posx < 90) stop = true
     }
   })
+  // -------------------------------------------------------------------------------------------------------------------
 
-  def background(): Unit = {
-    gameWindow.clear(new Color(187, 173, 160)) // Fond en beige foncé
+
+  // -------------------------------------------------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------------------------------------Fonctions
+  def drawBackground(): Unit = {
+    gameWindow.clear(backColor)
     gameWindow.drawTransformedPicture(300, 50, 0, 1, imageStop)
-    gameWindow.setColor(new Color(205, 193, 180)) // Beige clair pour les cellules
+    gameWindow.setColor(caseColor)
     for (x <- 0 until gridSize; y <- 0 until gridSize) {
       gameWindow.drawFillRect(margin + (x * cellSize) + (padding / 2), menuScreen + margin + (y * cellSize) + (padding / 2), cellSize - padding, cellSize - padding)
     }
   }
 
+  def getColorTab(caseValue : Int) : Color = {
+    var result = caseColor
+    caseValue match {
+      case 2 => result = Color.cyan
+      case 4 => result = Color.red
+      case _ =>
+    }
+    return result
+  }
+
+  def drawBoard(tabValue : Array[Array[Int]]) : Unit = {
+    for (y <- tabValue.indices; x <- tabValue(y).indices) {
+      gameWindow.setColor(getColorTab(tabValue(y)(x)))
+      gameWindow.drawFillRect(margin + (x * cellSize) + (padding / 2), menuScreen + margin + (y * cellSize) + (padding / 2), cellSize - padding, cellSize - padding)
+    }
+  }
+
+  def getNewTab(tabValue : Array[Array[Int]]) : Array[Array[Int]] = {
+    var result : Array[Array[Int]] = Array.ofDim(gridSize,gridSize)
+    result(y)(x) = 2
+    return result
+  }
+  // -------------------------------------------------------------------------------------------------------------------
+
+
+  // -------------------------------------------------------------------------------------------------------------------
+  // ----------------------------------------------------------------------------------------------------------------Jeu
   while (true) {
     if (stop) System.exit(0)
     else {
@@ -80,10 +124,22 @@ object Game_2048 extends App {
       if (pressedUp) direction = "up"
       if (pressedLeft) direction = "left"
       if (pressedRight) direction = "right"
+
+      direction match{
+        case "down" => if (y < gridSize-1) y += 1
+        case "up" => if (y > 0) y -= 1
+        case "left" => if (x > 0) x -= 1
+        case "right" => if (x < gridSize-1) x += 1
+        case _ =>
+      }
+      tab = getNewTab(tab)
+
       gameWindow.frontBuffer.synchronized {
-        background()
+        drawBackground()
+        drawBoard(tab)
       }
       gameWindow.syncGameLogic(60)
     }
   }
+  // -------------------------------------------------------------------------------------------------------------------
 }
