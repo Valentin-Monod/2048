@@ -5,7 +5,7 @@ import java.awt.Color
 
 object Game_2048 extends App {
   // -------------------------------------------------------------------------------------------------------------------
-  // ------------------------------------------------------------------------------------------Déclarations de variables
+  // ----------------------------------------------------------------------------------------------------------Variables
   val widthScreen = 600
   val menuScreen = 100
   val heightScreen = widthScreen + menuScreen
@@ -23,7 +23,7 @@ object Game_2048 extends App {
   var backColor = new Color(187, 173, 160)
   var caseColor = new Color(205, 193, 180)
 
-  var tab : Array[Array[Int]] = Array.ofDim(gridSize,gridSize)
+  var tab: Array[Array[Int]] = Array.ofDim(gridSize, gridSize)
   var x = 3
   var y = 0
   tab(y)(x) = 2
@@ -31,7 +31,7 @@ object Game_2048 extends App {
 
 
   // -------------------------------------------------------------------------------------------------------------------
-  // --------------------------------------------------------------------------------------------------Souris et Clavier
+  // -------------------------------------------------------------------------------------------------Mouse and Keyboard
   gameWindow.setKeyManager(new KeyAdapter() {
     override def keyPressed(e: KeyEvent): Unit = {
       e.getKeyChar match {
@@ -90,7 +90,7 @@ object Game_2048 extends App {
     }
   }
 
-  def getColorTab(caseValue : Int) : Color = {
+  def getColorTab(caseValue: Int): Color = {
     var result = caseColor
     caseValue match {
       case 2 => result = Color.cyan
@@ -100,15 +100,15 @@ object Game_2048 extends App {
     return result
   }
 
-  def drawBoard(tabValue : Array[Array[Int]]) : Unit = {
+  def drawBoard(tabValue: Array[Array[Int]]): Unit = {
     for (y <- tabValue.indices; x <- tabValue(y).indices) {
       gameWindow.setColor(getColorTab(tabValue(y)(x)))
       gameWindow.drawFillRect(margin + (x * cellSize) + (padding / 2), menuScreen + margin + (y * cellSize) + (padding / 2), cellSize - padding, cellSize - padding)
     }
   }
 
-  def getNewTab(tabValue : Array[Array[Int]]) : Array[Array[Int]] = {
-    var result : Array[Array[Int]] = Array.ofDim(gridSize,gridSize)
+  def getNewTab(tabValue: Array[Array[Int]]): Array[Array[Int]] = {
+    var result: Array[Array[Int]] = Array.ofDim(gridSize, gridSize)
     result(y)(x) = 2
     return result
   }
@@ -116,7 +116,7 @@ object Game_2048 extends App {
 
 
   // -------------------------------------------------------------------------------------------------------------------
-  // ----------------------------------------------------------------------------------------------------------------Jeu
+  // -----------------------------------------------------------------------------------------------------------GameLoop
   while (true) {
     if (stop) System.exit(0)
     else {
@@ -125,11 +125,11 @@ object Game_2048 extends App {
       if (pressedLeft) direction = "left"
       if (pressedRight) direction = "right"
 
-      direction match{
-        case "down" => if (y < gridSize-1) y += 1
+      direction match {
+        case "down" => if (y < gridSize - 1) y += 1
         case "up" => if (y > 0) y -= 1
         case "left" => if (x > 0) x -= 1
-        case "right" => if (x < gridSize-1) x += 1
+        case "right" => if (x < gridSize - 1) x += 1
         case _ =>
       }
       tab = getNewTab(tab)
