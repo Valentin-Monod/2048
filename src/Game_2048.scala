@@ -15,20 +15,24 @@ object Game_2048 extends App {
   val caseFactor = (cellSize.toDouble / 120.0)
   val gameWindow = new FunGraphics(widthScreen, heightScreen, "2048", true)
 
-  val tabLength = (Math.log(4096)/Math.log(2)).toInt
+  val tabMax = 2048
+  val tabLength = (Math.log(tabMax * 2) / Math.log(2)).toInt
 
-  val imageMenu = new GraphicsBitmap("/res/menu.jpg")
-  val tabImages : Array[GraphicsBitmap] = new Array(tabLength)
-  for (i <- 0 until  tabLength ) {
-    tabImages(i) = new GraphicsBitmap(s"/res/case${if(i==0)0 else Math.pow(2,i).toInt}.jpg")
+  val tabImages: Array[GraphicsBitmap] = new Array(tabLength)
+  for (i <- 0 until tabLength) {
+    tabImages(i) = new GraphicsBitmap(s"/res/case${if (i == 0) 0 else Math.pow(2, i).toInt}.jpg")
   }
 
   val backColor = new Color(187, 173, 160)
   val caseColor = new Color(202, 192, 180)
+  val titleColor = new Color(117, 110, 101)
+  var stopColor = Color.darkGray
 
   var pressedUp, pressedDown, pressedLeft, pressedRight = false
   var direction = "none"
+
   var stop = false
+  val stopSize = 50
 
   var tab: Array[Array[Int]] = Array.ofDim(gridSize, gridSize)
   var x = 3
@@ -77,13 +81,15 @@ object Game_2048 extends App {
     override def mouseClicked(e: MouseEvent): Unit = {
       val posx = e.getX
       val posy = e.getY
-      if (posy < 100 && posx > 500) stop = true
+      if (posy < stopSize && posx > widthScreen - stopSize) stop = true
     }
   })
   gameWindow.addMouseMotionListener(new MouseMotionAdapter() {
     override def mouseMoved(e: MouseEvent): Unit = {
       val posx = e.getX
       val posy = e.getY
+      if (posy < stopSize && posx > widthScreen - stopSize) stopColor = Color.red
+      else stopColor = Color.darkGray
       //println(s"Mouse : (X:$posx, Y:$posy)")
     }
   })
@@ -92,8 +98,17 @@ object Game_2048 extends App {
 
   // ----------------------------------------------------------------------------------------------------------Fonctions
   def drawBackground(): Unit = {
+    // Background
     gameWindow.clear(backColor)
-    gameWindow.drawTransformedPicture(300, 50, 0, 1, imageMenu)
+    // Title
+    gameWindow.drawFancyString(215, 85, "2048", "Arial Rounded MT Bold", 1, 70, titleColor)
+    // Stop BTN
+    gameWindow.setColor(stopColor)
+    gameWindow.drawFillRect(widthScreen - stopSize, 0, stopSize, stopSize)
+    gameWindow.setColor(Color.white)
+    gameWindow.drawLine(widthScreen - stopSize, 0, widthScreen, stopSize)
+    gameWindow.drawLine(widthScreen - stopSize, stopSize, widthScreen, 0)
+    // Game Cells
     gameWindow.setColor(caseColor)
     for (x <- 0 until gridSize; y <- 0 until gridSize) {
       gameWindow.drawFillRect(margin + padding + (x * cellSize) + (x * padding), menuScreen + margin + padding + (y * cellSize) + (y * padding), cellSize - padding, cellSize - padding)
@@ -101,27 +116,17 @@ object Game_2048 extends App {
   }
 
   def getImage(caseValue: Int): GraphicsBitmap = {
-    var i = if (caseValue==0)0 else(Math.log(caseValue)/Math.log(2)).toInt
+    var i = if (caseValue == 0) 0 else (Math.log(caseValue) / Math.log(2)).toInt
     return tabImages(i)
   }
 
-  def getColorTab(caseValue: Int): Color = {
-    var result = caseColor
-    caseValue match {
-      case 2 => result = Color.cyan
-      case 4 => result = Color.red
-      case _ =>
-    }
-    return result
-  }
-
-  def drawBoard(tabValue: Array[Array[Int]]): Unit = {
+  def drawTab(tabValue: Array[Array[Int]]): Unit = {
     for (y <- tabValue.indices; x <- tabValue(y).indices) {
       gameWindow.drawTransformedPicture(margin + padding + (x * cellSize) + (x * padding) + ((cellSize - padding) / 2), menuScreen + margin + padding + (y * cellSize) + (y * padding) + ((cellSize - padding) / 2), 0, caseFactor, getImage(tabValue(y)(x)))
     }
   }
 
-  def getNewTab(tabValue: Array[Array[Int]]): Array[Array[Int]] = {
+  def updateTab(tabValue: Array[Array[Int]]): Array[Array[Int]] = {
     var result: Array[Array[Int]] = Array.ofDim(gridSize, gridSize)
     result(y)(x) = 2
     return result
@@ -145,11 +150,11 @@ object Game_2048 extends App {
         case _ =>
       }
 
-      tab = getNewTab(tab)
+      tab = updateTab(tab)
 
       gameWindow.frontBuffer.synchronized {
         drawBackground()
-        drawBoard(tab)
+        drawTab(tab)
       }
 
       gameWindow.syncGameLogic(60)
