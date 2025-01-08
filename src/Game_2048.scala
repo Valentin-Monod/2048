@@ -12,11 +12,12 @@ object Game_2048 extends App {
   val gridSize = 4
   val margin = 20
   val padding = 20
-  val cellSize = (widthScreen - 2 * margin) / gridSize
+  val cellSize = (widthScreen - (2 * margin) - (gridSize * padding)) / gridSize
+  val caseFactor = (cellSize.toDouble / 120.0)
   println(cellSize)
-  val caseFactor = 4.0 / gridSize.toDouble
+  println(caseFactor)
   val gameWindow = new FunGraphics(widthScreen, heightScreen, "2048", true)
-  val imageStop = new GraphicsBitmap("/res/stop.jpg")
+  val imageMenu = new GraphicsBitmap("/res/menu.jpg")
   val imageCase0 = new GraphicsBitmap("/res/case0.png")
   val imageCase2 = new GraphicsBitmap("/res/case2.png")
 
@@ -92,10 +93,10 @@ object Game_2048 extends App {
   // ----------------------------------------------------------------------------------------------------------Fonctions
   def drawBackground(): Unit = {
     gameWindow.clear(backColor)
-    gameWindow.drawTransformedPicture(300, 50, 0, 1, imageStop)
+    gameWindow.drawTransformedPicture(300, 50, 0, 1, imageMenu)
     gameWindow.setColor(caseColor)
     for (x <- 0 until gridSize; y <- 0 until gridSize) {
-      gameWindow.drawFillRect(margin + (x * cellSize) + (padding / 2), menuScreen + margin + (y * cellSize) + (padding / 2), cellSize - padding, cellSize - padding)
+      gameWindow.drawFillRect(margin + padding + (x * cellSize) + (x * padding), menuScreen + margin + padding + (y * cellSize) + (y * padding), cellSize - padding, cellSize - padding)
     }
   }
 
@@ -108,9 +109,21 @@ object Game_2048 extends App {
     return result
   }
 
+  def getColorTab(caseValue: Int): Color = {
+    var result = caseColor
+    caseValue match {
+      case 2 => result = Color.cyan
+      case 4 => result = Color.red
+      case _ =>
+    }
+    return result
+  }
+
   def drawBoard(tabValue: Array[Array[Int]]): Unit = {
     for (y <- tabValue.indices; x <- tabValue(y).indices) {
-      gameWindow.drawTransformedPicture(margin + (x * cellSize) + (padding / 2) + ((cellSize-padding) / 2), menuScreen + margin + (y * cellSize) + (padding / 2) + ((cellSize-padding) / 2), 0, caseFactor, getImage(tabValue(y)(x)))
+      gameWindow.drawTransformedPicture(margin + padding + (x * cellSize) + (x * padding) + ((cellSize - padding) / 2), menuScreen + margin + padding + (y * cellSize) + (y * padding) + ((cellSize - padding) / 2), 0, caseFactor, getImage(tabValue(y)(x)))
+      //gameWindow.setColor(getColorTab(tabValue(y)(x)))
+      //gameWindow.drawFillRect(margin + padding + (x * cellSize) + (x * padding), menuScreen + margin + padding + (y * cellSize) + (y * padding), cellSize - padding, cellSize - padding)
     }
   }
 
@@ -145,6 +158,7 @@ object Game_2048 extends App {
         drawBackground()
         drawBoard(tab)
       }
+
       gameWindow.syncGameLogic(60)
     }
   }
