@@ -14,8 +14,6 @@ object Game_2048 extends App {
   val padding = 20
   val cellSize = (widthScreen - (2 * margin) - (gridSize * padding)) / gridSize
   val caseFactor = (cellSize.toDouble / 120.0)
-  println(cellSize)
-  println(caseFactor)
   val gameWindow = new FunGraphics(widthScreen, heightScreen, "2048", true)
   val imageMenu = new GraphicsBitmap("/res/menu.jpg")
   val imageCase0 = new GraphicsBitmap("/res/case0.png")
@@ -122,8 +120,6 @@ object Game_2048 extends App {
   def drawBoard(tabValue: Array[Array[Int]]): Unit = {
     for (y <- tabValue.indices; x <- tabValue(y).indices) {
       gameWindow.drawTransformedPicture(margin + padding + (x * cellSize) + (x * padding) + ((cellSize - padding) / 2), menuScreen + margin + padding + (y * cellSize) + (y * padding) + ((cellSize - padding) / 2), 0, caseFactor, getImage(tabValue(y)(x)))
-      //gameWindow.setColor(getColorTab(tabValue(y)(x)))
-      //gameWindow.drawFillRect(margin + padding + (x * cellSize) + (x * padding), menuScreen + margin + padding + (y * cellSize) + (y * padding), cellSize - padding, cellSize - padding)
     }
   }
 
