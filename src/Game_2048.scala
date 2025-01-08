@@ -1,6 +1,6 @@
 import hevs.graphics.FunGraphics
 import hevs.graphics.utils.GraphicsBitmap
-import java.awt.event.{KeyAdapter, KeyEvent, MouseAdapter, MouseEvent}
+import java.awt.event.{KeyAdapter, KeyEvent, MouseAdapter, MouseEvent, MouseMotionAdapter}
 import java.awt.Color
 
 object Game_2048 extends App {
@@ -13,8 +13,12 @@ object Game_2048 extends App {
   val margin = 20
   val padding = 20
   val cellSize = (widthScreen - 2 * margin) / gridSize
+  println(cellSize)
+  val caseFactor = 4.0 / gridSize.toDouble
   val gameWindow = new FunGraphics(widthScreen, heightScreen, "2048", true)
   val imageStop = new GraphicsBitmap("/res/stop.jpg")
+  val imageCase0 = new GraphicsBitmap("/res/case0.png")
+  val imageCase2 = new GraphicsBitmap("/res/case2.png")
 
   var pressedUp, pressedDown, pressedLeft, pressedRight = false
   var direction = "none"
@@ -69,11 +73,16 @@ object Game_2048 extends App {
   })
   gameWindow.addMouseListener(new MouseAdapter() {
     override def mouseClicked(e: MouseEvent): Unit = {
-      val event = e
-      val posx = event.getX
-      val posy = event.getY
-      //println("posx" + posx); println("posy" + posy);
+      val posx = e.getX
+      val posy = e.getY
       if (posy < 100 && posx < 90) stop = true
+    }
+  })
+  gameWindow.addMouseMotionListener(new MouseMotionAdapter() {
+    override def mouseMoved(e: MouseEvent): Unit = {
+      val posx = e.getX
+      val posy = e.getY
+      //println(s"Mouse : (X:$posx, Y:$posy)")
     }
   })
   // -------------------------------------------------------------------------------------------------------------------
@@ -90,11 +99,10 @@ object Game_2048 extends App {
     }
   }
 
-  def getColorTab(caseValue: Int): Color = {
-    var result = caseColor
+  def getImage(caseValue: Int): GraphicsBitmap = {
+    var result = imageCase0
     caseValue match {
-      case 2 => result = Color.cyan
-      case 4 => result = Color.red
+      case 2 => result = imageCase2
       case _ =>
     }
     return result
@@ -102,8 +110,7 @@ object Game_2048 extends App {
 
   def drawBoard(tabValue: Array[Array[Int]]): Unit = {
     for (y <- tabValue.indices; x <- tabValue(y).indices) {
-      gameWindow.setColor(getColorTab(tabValue(y)(x)))
-      gameWindow.drawFillRect(margin + (x * cellSize) + (padding / 2), menuScreen + margin + (y * cellSize) + (padding / 2), cellSize - padding, cellSize - padding)
+      gameWindow.drawTransformedPicture(margin + (x * cellSize) + (padding / 2) + ((cellSize-padding) / 2), menuScreen + margin + (y * cellSize) + (padding / 2) + ((cellSize-padding) / 2), 0, caseFactor, getImage(tabValue(y)(x)))
     }
   }
 
@@ -124,7 +131,6 @@ object Game_2048 extends App {
       if (pressedUp) direction = "up"
       if (pressedLeft) direction = "left"
       if (pressedRight) direction = "right"
-
       direction match {
         case "down" => if (y < gridSize - 1) y += 1
         case "up" => if (y > 0) y -= 1
@@ -132,6 +138,7 @@ object Game_2048 extends App {
         case "right" => if (x < gridSize - 1) x += 1
         case _ =>
       }
+
       tab = getNewTab(tab)
 
       gameWindow.frontBuffer.synchronized {
