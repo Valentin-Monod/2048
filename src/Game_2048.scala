@@ -4,7 +4,6 @@ import java.awt.event.{KeyAdapter, KeyEvent, MouseAdapter, MouseEvent, MouseMoti
 import java.awt.Color
 
 object Game_2048 extends App {
-  // -------------------------------------------------------------------------------------------------------------------
   // ----------------------------------------------------------------------------------------------------------Variables
   val widthScreen = 600
   val menuScreen = 100
@@ -15,16 +14,21 @@ object Game_2048 extends App {
   val cellSize = (widthScreen - (2 * margin) - (gridSize * padding)) / gridSize
   val caseFactor = (cellSize.toDouble / 120.0)
   val gameWindow = new FunGraphics(widthScreen, heightScreen, "2048", true)
+
+  val tabLength = (Math.log(4096)/Math.log(2)).toInt
+
   val imageMenu = new GraphicsBitmap("/res/menu.jpg")
-  val imageCase0 = new GraphicsBitmap("/res/case0.png")
-  val imageCase2 = new GraphicsBitmap("/res/case2.png")
+  val tabImages : Array[GraphicsBitmap] = new Array(tabLength)
+  for (i <- 0 until  tabLength ) {
+    tabImages(i) = new GraphicsBitmap(s"/res/case${if(i==0)0 else Math.pow(2,i).toInt}.jpg")
+  }
+
+  val backColor = new Color(187, 173, 160)
+  val caseColor = new Color(202, 192, 180)
 
   var pressedUp, pressedDown, pressedLeft, pressedRight = false
   var direction = "none"
   var stop = false
-
-  var backColor = new Color(187, 173, 160)
-  var caseColor = new Color(205, 193, 180)
 
   var tab: Array[Array[Int]] = Array.ofDim(gridSize, gridSize)
   var x = 3
@@ -33,7 +37,6 @@ object Game_2048 extends App {
   // -------------------------------------------------------------------------------------------------------------------
 
 
-  // -------------------------------------------------------------------------------------------------------------------
   // -------------------------------------------------------------------------------------------------Mouse and Keyboard
   gameWindow.setKeyManager(new KeyAdapter() {
     override def keyPressed(e: KeyEvent): Unit = {
@@ -74,7 +77,7 @@ object Game_2048 extends App {
     override def mouseClicked(e: MouseEvent): Unit = {
       val posx = e.getX
       val posy = e.getY
-      if (posy < 100 && posx < 90) stop = true
+      if (posy < 100 && posx > 500) stop = true
     }
   })
   gameWindow.addMouseMotionListener(new MouseMotionAdapter() {
@@ -87,7 +90,6 @@ object Game_2048 extends App {
   // -------------------------------------------------------------------------------------------------------------------
 
 
-  // -------------------------------------------------------------------------------------------------------------------
   // ----------------------------------------------------------------------------------------------------------Fonctions
   def drawBackground(): Unit = {
     gameWindow.clear(backColor)
@@ -99,12 +101,8 @@ object Game_2048 extends App {
   }
 
   def getImage(caseValue: Int): GraphicsBitmap = {
-    var result = imageCase0
-    caseValue match {
-      case 2 => result = imageCase2
-      case _ =>
-    }
-    return result
+    var i = if (caseValue==0)0 else(Math.log(caseValue)/Math.log(2)).toInt
+    return tabImages(i)
   }
 
   def getColorTab(caseValue: Int): Color = {
@@ -131,7 +129,6 @@ object Game_2048 extends App {
   // -------------------------------------------------------------------------------------------------------------------
 
 
-  // -------------------------------------------------------------------------------------------------------------------
   // -----------------------------------------------------------------------------------------------------------GameLoop
   while (true) {
     if (stop) System.exit(0)
