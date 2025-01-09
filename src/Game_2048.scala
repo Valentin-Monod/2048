@@ -5,39 +5,42 @@ import java.awt.Color
 
 object Game_2048 extends App {
   // ----------------------------------------------------------------------------------------------------------Variables
+  // Screen
   val widthScreen = 600
   val menuScreen = 100
   val heightScreen = widthScreen + menuScreen
+  val gameWindow = new FunGraphics(widthScreen, heightScreen, "2048", true)
+
+  // Cells
   val gridSize = 4
   val margin = 20
   val padding = 20
   val cellSize = (widthScreen - (2 * margin) - (gridSize * padding)) / gridSize
   val caseFactor = (cellSize.toDouble / 120.0)
-  val gameWindow = new FunGraphics(widthScreen, heightScreen, "2048", true)
 
-  val tabMax = 2048
-  val tabLength = (Math.log(tabMax * 2) / Math.log(2)).toInt
-
-  val tabImages: Array[GraphicsBitmap] = new Array(tabLength)
-  for (i <- 0 until tabLength) {
-    tabImages(i) = new GraphicsBitmap(s"/res/case${if (i == 0) 0 else Math.pow(2, i).toInt}.jpg")
-  }
-
+  // Colors
   val backColor = new Color(187, 173, 160)
   val caseColor = new Color(202, 192, 180)
   val titleColor = new Color(117, 110, 101)
   var stopColor = Color.darkGray
 
+  // Keyboard - Directions
   var pressedUp, pressedDown, pressedLeft, pressedRight = false
   var direction = "none"
+  var isUpdating = false
 
+  // Game
   var stop = false
   val stopSize = 50
-
+  val tabMax = 2048
+  val tabLength = (Math.log(tabMax * 2) / Math.log(2)).toInt
+  val tabImages: Array[GraphicsBitmap] = new Array(tabLength)
+  for (i <- 0 until tabLength) tabImages(i) = new GraphicsBitmap(s"/res/case${if (i == 0) 0 else Math.pow(2, i).toInt}.jpg")
   var tab: Array[Array[Int]] = Array.ofDim(gridSize, gridSize)
   var x = 3
   var y = 0
   tab(y)(x) = 2
+  var incr = 0
   // -------------------------------------------------------------------------------------------------------------------
 
 
@@ -128,6 +131,20 @@ object Game_2048 extends App {
 
   def updateTab(tabValue: Array[Array[Int]]): Array[Array[Int]] = {
     var result: Array[Array[Int]] = Array.ofDim(gridSize, gridSize)
+    if(incr<gridSize){
+      direction match {
+        case "down" => if (y < gridSize - 1) y += 1
+        case "up" => if (y > 0) y -= 1
+        case "left" => if (x > 0) x -= 1
+        case "right" => if (x < gridSize - 1) x += 1
+        case _ =>
+      }
+      incr += 1
+    }
+    else {
+      incr = 0
+      isUpdating = false
+    }
     result(y)(x) = 2
     return result
   }
@@ -138,25 +155,17 @@ object Game_2048 extends App {
   while (true) {
     if (stop) System.exit(0)
     else {
-      if (pressedDown) direction = "down"
-      if (pressedUp) direction = "up"
-      if (pressedLeft) direction = "left"
-      if (pressedRight) direction = "right"
-      direction match {
-        case "down" => if (y < gridSize - 1) y += 1
-        case "up" => if (y > 0) y -= 1
-        case "left" => if (x > 0) x -= 1
-        case "right" => if (x < gridSize - 1) x += 1
-        case _ =>
+      if (!isUpdating){
+        if (pressedDown) direction = "down"; isUpdating = true
+        if (pressedUp) direction = "up"; isUpdating = true
+        if (pressedLeft) direction = "left"; isUpdating = true
+        if (pressedRight) direction = "right"; isUpdating = true
       }
-
       tab = updateTab(tab)
-
       gameWindow.frontBuffer.synchronized {
         drawBackground()
         drawTab(tab)
       }
-
       gameWindow.syncGameLogic(60)
     }
   }
