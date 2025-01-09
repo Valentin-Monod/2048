@@ -1,9 +1,14 @@
 import hevs.graphics.FunGraphics
 import hevs.graphics.utils.GraphicsBitmap
-
 import java.awt.event.{KeyAdapter, KeyEvent, MouseAdapter, MouseEvent, MouseMotionAdapter}
 import java.awt.Color
 import scala.util.Random
+
+class Case() {
+  var caseValue = 0
+  var step = 0
+  var nextValue = 0
+}
 
 object Game_2048 extends App {
   // ----------------------------------------------------------------------------------------------------------Variables
@@ -38,11 +43,12 @@ object Game_2048 extends App {
   val tabLength = (Math.log(tabMax * 2) / Math.log(2)).toInt
   val tabImages: Array[GraphicsBitmap] = new Array(tabLength)
   for (i <- 0 until tabLength) tabImages(i) = new GraphicsBitmap(s"/res/case${if (i == 0) 0 else Math.pow(2, i).toInt}.jpg")
-  var tab: Array[Array[Int]] = Array.ofDim(gridSize, gridSize)
+  var tab: Array[Array[Case]] = Array.fill(gridSize, gridSize)(new Case)
+  //tab = getRandomCases(tab)
+  //tab = getRandomCases(tab)
   var x = 3
   var y = 0
-  //tab(y)(x) = 2
-  tab = getRandomCases(tab)
+  tab(y)(x).caseValue = 2
   var incr = 0
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -126,15 +132,59 @@ object Game_2048 extends App {
     return tabImages(i)
   }
 
-  def drawTab(tabValue: Array[Array[Int]]): Unit = {
+  def drawTab(tabValue: Array[Array[Case]]): Unit = {
     for (y <- tabValue.indices; x <- tabValue(y).indices) {
-      gameWindow.drawTransformedPicture(margin + padding + (x * cellSize) + (x * padding) + ((cellSize - padding) / 2), menuScreen + margin + padding + (y * cellSize) + (y * padding) + ((cellSize - padding) / 2), 0, caseFactor, getImage(tabValue(y)(x)))
+      gameWindow.drawTransformedPicture(margin + padding + (x * cellSize) + (x * padding) + ((cellSize - padding) / 2), menuScreen + margin + padding + (y * cellSize) + (y * padding) + ((cellSize - padding) / 2), 0, caseFactor, getImage(tabValue(y)(x).caseValue))
     }
   }
 
-  def updateTab(tabValue: Array[Array[Int]]): Array[Array[Int]] = {
-    var result: Array[Array[Int]] = Array.ofDim(gridSize, gridSize)
-    if(incr<gridSize){
+  def getRandomCases(tabValue: Array[Array[Case]]): Array[Array[Case]] = {
+    var result: Array[Array[Case]] = tabValue.map(_.clone)
+    var check = false
+    while (!check) {
+      var randomX = Random.nextInt(gridSize - 1)
+      var randomY = Random.nextInt(gridSize - 1)
+      if (result(randomX)(randomY).caseValue == 0) {
+        if (Random.nextInt(100) > 90) result(randomX)(randomY).caseValue = 4
+        else result(randomX)(randomY).caseValue = 2
+        check = true
+      }
+    }
+    result
+  }
+
+  def checkGame(tabValue: Array[Array[Case]]): Int = {
+    var result = 0 // Check si le jeu est perdu (2), gagné (1) ou si on continu (0)
+    var check2048, check0 = false
+    for (y <- tabValue.indices; x <- tabValue(y).indices) {
+      if (tabValue(y)(x).caseValue == 2048) check2048 = true
+      if (tabValue(y)(x).caseValue == 0) check0 = true
+    }
+    if (check2048) result = 1
+    else {
+      if(!check0){
+        var fusionPossible = false
+        for (y <- tabValue.indices; x <- tabValue(y).indices) {
+          try {
+            if (tabValue(y)(x).caseValue == tabValue(y+1)(x).caseValue ||
+              tabValue(y)(x).caseValue == tabValue(y)(x+1).caseValue ||
+              tabValue(y)(x).caseValue == tabValue(y-1)(x).caseValue ||
+              tabValue(y)(x).caseValue == tabValue(y)(x-1).caseValue){
+              fusionPossible = true
+            }
+          }
+          catch { case e : Exception => }
+        }
+        if (!fusionPossible) result = 2
+      }
+    }
+    result
+  }
+  
+  def updateTab(tabValue: Array[Array[Case]]): Array[Array[Case]] = {
+    var result: Array[Array[Case]] = Array.fill(gridSize, gridSize)(new Case)
+    if (incr < gridSize) {
+      // TODO :
       direction match {
         case "down" => if (y < gridSize - 1) y += 1
         case "up" => if (y > 0) y -= 1
@@ -147,42 +197,64 @@ object Game_2048 extends App {
     else {
       incr = 0
       isUpdating = false
+      //tab = getRandomCases(tab)
     }
-    result(y)(x) = 2
+    result(y)(x).caseValue = 2
     return result
   }
 
-  def getRandomCases(tabValue: Array[Array[Int]]): Array[Array[Int]] ={
-    var result: Array[Array[Int]] = tabValue.map(_.clone)
-    var check = false
-    while(!check) {
-      var randomX = Random.nextInt(gridSize - 1)
-      var randomY = Random.nextInt(gridSize - 1)
-      if (result(randomX)(randomY) == 0) {
-        if (Random.nextInt(100) > 90) result(randomX)(randomY) = 4
-        else result(randomX)(randomY) = 2
-        check = true
-      }
+  def calculateNewFinalTab (tabValue: Array[Array[Case]]): Array[Array[Case]] = {
+    var result: Array[Array[Case]] = Array.fill(gridSize, gridSize)(new Case)
+    // TODO : calculer les distances et les valeurs finales
+    direction match {
+      case "down" =>
+        for (y <- tabValue.indices; x <- tabValue(y).indices){
+          for (w <- 0 to gridSize-y-1) {
+            if (tabValue(w)(x).caseValue != 0){
+              if (tabValue(w)(x).caseValue == tabValue(y)(x).caseValue){
+                tabValue(y)(x)
+              }
+            }
+            else tabValue(y)(x).step += 1
+          }
+        }
+      case "up" =>
+      case "left" =>
+      case "right" =>
+      case _ =>
     }
     result
   }
-    // -------------------------------------------------------------------------------------------------------------------
+
+  def drawMenu(stateOfGame: Int): Unit = {
+    // TODO : faire une fonction draw menu qui dit si gagné ou perdu et si on veut rejouer
+    // aussi réinitialiser les variables si on rejoue
+  }
+  // -------------------------------------------------------------------------------------------------------------------
 
 
   // -----------------------------------------------------------------------------------------------------------GameLoop
   while (true) {
     if (stop) System.exit(0)
     else {
-      if (!isUpdating){
-        if (pressedDown) direction = "down"; isUpdating = true
-        if (pressedUp) direction = "up"; isUpdating = true
-        if (pressedLeft) direction = "left"; isUpdating = true
-        if (pressedRight) direction = "right"; isUpdating = true
-      }
-      //tab = updateTab(tab)
       gameWindow.frontBuffer.synchronized {
-        drawBackground()
-        drawTab(tab)
+        if (checkGame(tab) == 0 || isUpdating) {
+          if (!isUpdating) {
+            if (pressedDown) direction = "down";
+            if (pressedUp) direction = "up"
+            if (pressedLeft) direction = "left"
+            if (pressedRight) direction = "right"
+            isUpdating = true
+            //calculateNewFinalTab(tab)
+          }
+          tab = updateTab(tab)
+          drawBackground()
+          drawTab(tab)
+        }
+        else {
+          drawBackground()
+          drawMenu(checkGame(tab))
+        }
       }
       gameWindow.syncGameLogic(60)
     }
