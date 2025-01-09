@@ -1,7 +1,9 @@
 import hevs.graphics.FunGraphics
 import hevs.graphics.utils.GraphicsBitmap
+
 import java.awt.event.{KeyAdapter, KeyEvent, MouseAdapter, MouseEvent, MouseMotionAdapter}
 import java.awt.Color
+import scala.util.Random
 
 object Game_2048 extends App {
   // ----------------------------------------------------------------------------------------------------------Variables
@@ -39,7 +41,8 @@ object Game_2048 extends App {
   var tab: Array[Array[Int]] = Array.ofDim(gridSize, gridSize)
   var x = 3
   var y = 0
-  tab(y)(x) = 2
+  //tab(y)(x) = 2
+  tab = getRandomCases(tab)
   var incr = 0
   // -------------------------------------------------------------------------------------------------------------------
 
@@ -148,7 +151,22 @@ object Game_2048 extends App {
     result(y)(x) = 2
     return result
   }
-  // -------------------------------------------------------------------------------------------------------------------
+
+  def getRandomCases(tabValue: Array[Array[Int]]): Array[Array[Int]] ={
+    var result: Array[Array[Int]] = tabValue.map(_.clone)
+    var check = false
+    while(!check) {
+      var randomX = Random.nextInt(gridSize - 1)
+      var randomY = Random.nextInt(gridSize - 1)
+      if (result(randomX)(randomY) == 0) {
+        if (Random.nextInt(100) > 90) result(randomX)(randomY) = 4
+        else result(randomX)(randomY) = 2
+        check = true
+      }
+    }
+    result
+  }
+    // -------------------------------------------------------------------------------------------------------------------
 
 
   // -----------------------------------------------------------------------------------------------------------GameLoop
@@ -161,7 +179,7 @@ object Game_2048 extends App {
         if (pressedLeft) direction = "left"; isUpdating = true
         if (pressedRight) direction = "right"; isUpdating = true
       }
-      tab = updateTab(tab)
+      //tab = updateTab(tab)
       gameWindow.frontBuffer.synchronized {
         drawBackground()
         drawTab(tab)
