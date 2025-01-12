@@ -1,13 +1,8 @@
+import java.awt.Color
+import scala.util.Random
 import hevs.graphics.FunGraphics
 import hevs.graphics.utils.GraphicsBitmap
 import java.awt.event.{KeyAdapter, KeyEvent, MouseAdapter, MouseEvent, MouseMotionAdapter}
-import java.awt.Color
-import scala.util.Random
-
-class Case() {
-  var caseValue = 0
-  var hasFusionned: Boolean = false
-}
 
 object Game_2048 extends App {
   // ----------------------------------------------------------------------------------------------------------Variables
@@ -42,8 +37,10 @@ object Game_2048 extends App {
   var tab: Array[Array[Case]] = Array.fill(gridSize, gridSize)(new Case)
   tab = getRandomCases(tab)
   tab = getRandomCases(tab)
-//  tab(0)(0).caseValue = 1024
-//  tab(0)(3).caseValue = 1024
+
+  // To test the win easly
+  //tab(0)(0).caseValue = 1024
+  //tab(0)(3).caseValue = 1024
 
   // Images
   val tabMax = 2048
