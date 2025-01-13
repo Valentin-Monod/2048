@@ -193,17 +193,17 @@ object Game_2048 extends App {
 
   def updateTab(tabValue: Array[Array[Case]]): Array[Array[Case]] = {
     var result: Array[Array[Case]] = tabValue.map(_.clone)
-    if (incr <= 7) {
+    if (incr <= (gridSize*2)-1) {
       direction match {
         case "down" =>
-          if (incr <= 2 || incr > 3) {
+          if (incr < gridSize-1 || incr > gridSize-1) {
             for (i <- 0 until gridSize; w <- (gridSize - 1) until 0 by -1) {
               if (result(w)(i).caseValue == 0) {
                 result(w)(i).caseValue = result(w - 1)(i).caseValue
                 result(w - 1)(i).caseValue = 0
               }
             }
-          } else if (incr == 3) {
+          } else if (incr == gridSize-1) {
             for (i <- 0 until gridSize; w <- (gridSize - 1) until 0 by -1) {
               if (result(w)(i).caseValue == result(w - 1)(i).caseValue && !result(w)(i).hasFusionned && !result(w - 1)(i).hasFusionned) {
                 result(w)(i).caseValue *= 2
@@ -214,14 +214,14 @@ object Game_2048 extends App {
           }
 
         case "up" =>
-          if (incr <= 2 || incr > 3) {
+          if (incr < gridSize-1 || incr > gridSize-1) {
             for (i <- 0 until gridSize; w <- 0 until (gridSize - 1)) {
               if (result(w)(i).caseValue == 0) {
                 result(w)(i).caseValue = result(w + 1)(i).caseValue
                 result(w + 1)(i).caseValue = 0
               }
             }
-          } else if (incr == 3) {
+          } else if (incr == gridSize-1) {
             for (i <- 0 until gridSize; w <- 0 until (gridSize - 1)) {
               if (result(w)(i).caseValue == result(w + 1)(i).caseValue && !result(w)(i).hasFusionned && !result(w + 1)(i).hasFusionned) {
                 result(w)(i).caseValue *= 2
@@ -232,14 +232,14 @@ object Game_2048 extends App {
           }
 
         case "left" =>
-          if (incr <= 2 || incr > 3) {
+          if (incr < gridSize-1 || incr > gridSize-1) {
             for (j <- 0 until gridSize; w <- 0 until (gridSize - 1)) {
               if (result(j)(w).caseValue == 0) {
                 result(j)(w).caseValue = result(j)(w + 1).caseValue
                 result(j)(w + 1).caseValue = 0
               }
             }
-          } else if (incr == 3) {
+          } else if (incr == gridSize-1) {
             for (j <- 0 until gridSize; w <- 0 until (gridSize - 1)) {
               if (result(j)(w).caseValue == result(j)(w + 1).caseValue && !result(j)(w).hasFusionned && !result(j)(w + 1).hasFusionned) {
                 result(j)(w).caseValue *= 2
@@ -250,14 +250,14 @@ object Game_2048 extends App {
           }
 
         case "right" =>
-          if (incr <= 2 || incr > 3) {
+          if (incr < gridSize-1 || incr > gridSize-1) {
             for (j <- 0 until gridSize; w <- (gridSize - 1) until 0 by -1) {
               if (result(j)(w).caseValue == 0) {
                 result(j)(w).caseValue = result(j)(w - 1).caseValue
                 result(j)(w - 1).caseValue = 0
               }
             }
-          } else if (incr == 3) {
+          } else if (incr == gridSize-1) {
             for (j <- 0 until gridSize; w <- (gridSize - 1) until 0 by -1) {
               if (result(j)(w).caseValue == result(j)(w - 1).caseValue && !result(j)(w).hasFusionned && !result(j)(w - 1).hasFusionned) {
                 result(j)(w).caseValue *= 2
