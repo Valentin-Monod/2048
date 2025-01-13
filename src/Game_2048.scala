@@ -240,45 +240,45 @@ object Game_2048 extends App {
 
           // Goal buttons
           if (goal128Color != newGameBtnColorNormal) {
-            if (posy < 170 && posy > 130 && posx < 200 && posx > 160) goal128Color = Color.lightGray
+            if (posy < 170 && posy > 130 && posx < 200 && posx > 160) goal128Color = Color.white
             else goal128Color = caseColor
           }
           if (goal256Color != newGameBtnColorNormal) {
-            if (posy < 170 && posy > 130 && posx < 260 && posx > 220) goal256Color = Color.lightGray
+            if (posy < 170 && posy > 130 && posx < 260 && posx > 220) goal256Color = Color.white
             else goal256Color = caseColor
           }
           if (goal512Color != newGameBtnColorNormal) {
-            if (posy < 170 && posy > 130 && posx < 320 && posx > 280) goal512Color = Color.lightGray
+            if (posy < 170 && posy > 130 && posx < 320 && posx > 280) goal512Color = Color.white
             else goal512Color = caseColor
           }
           if (goal1024Color != newGameBtnColorNormal) {
-            if (posy < 170 && posy > 130 && posx < 380 && posx > 340) goal1024Color = Color.lightGray
+            if (posy < 170 && posy > 130 && posx < 380 && posx > 340) goal1024Color = Color.white
             else goal1024Color = caseColor
           }
           if (goal2048Color != newGameBtnColorNormal) {
-            if (posy < 170 && posy > 130 && posx < 440 && posx > 400) goal2048Color = Color.lightGray
+            if (posy < 170 && posy > 130 && posx < 440 && posx > 400) goal2048Color = Color.white
             else goal2048Color = caseColor
           }
 
           // Grid buttons
           if (grid4Color != newGameBtnColorNormal) {
-            if (posy < 245 && posy > 205 && posx < 200 && posx > 160) grid4Color = Color.lightGray
+            if (posy < 245 && posy > 205 && posx < 200 && posx > 160) grid4Color = Color.white
             else grid4Color = caseColor
           }
           if (grid8Color != newGameBtnColorNormal) {
-            if (posy < 245 && posy > 205 && posx < 260 && posx > 220) grid8Color = Color.lightGray
+            if (posy < 245 && posy > 205 && posx < 260 && posx > 220) grid8Color = Color.white
             else grid8Color = caseColor
           }
           if (grid10Color != newGameBtnColorNormal) {
-            if (posy < 245 && posy > 205 && posx < 320 && posx > 280) grid10Color = Color.lightGray
+            if (posy < 245 && posy > 205 && posx < 320 && posx > 280) grid10Color = Color.white
             else grid10Color = caseColor
           }
           if (grid16Color != newGameBtnColorNormal) {
-            if (posy < 245 && posy > 205 && posx < 380 && posx > 340) grid16Color = Color.lightGray
+            if (posy < 245 && posy > 205 && posx < 380 && posx > 340) grid16Color = Color.white
             else grid16Color = caseColor
           }
           if (grid20Color != newGameBtnColorNormal) {
-            if (posy < 245 && posy > 205 && posx < 440 && posx > 400) grid20Color = Color.lightGray
+            if (posy < 245 && posy > 205 && posx < 440 && posx > 400) grid20Color = Color.white
             else grid20Color = caseColor
           }
 
