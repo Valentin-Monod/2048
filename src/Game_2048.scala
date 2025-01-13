@@ -13,15 +13,15 @@ object Game_2048 extends App {
   val gameWindow = new FunGraphics(widthScreen, heightScreen, "2048", true)
 
   // Game Settings
-  val gridSize = 4
-  val margin = 20
-  val padding = 20
-  val menuBtnSize = 50
-  val winNumber = 2048
+  var menuBtnSize = 50
+  var margin = 20
+  var gridSize = 4
+  var winNumber = 2048
 
   // Cells
-  val cellSize = (widthScreen - (2 * margin) - (gridSize * padding)) / gridSize
-  val caseFactor = (cellSize.toDouble / 120.0)
+  var padding = 80 / gridSize
+  var cellSize = (widthScreen - (2 * margin) - (gridSize * padding)) / gridSize
+  var caseFactor = (cellSize.toDouble / 120.0)
 
   // Fixed colors
   val gameBackColor = new Color(187, 173, 160)
@@ -33,11 +33,24 @@ object Game_2048 extends App {
   val newGameBtnColorNormal = new Color(242, 177, 121)
   val newGameBtnColorHover = new Color(199, 146, 99)
   val leaveBtnColorHover = new Color(217, 108, 108)
+  val homeBtnColorNormal = new Color(242, 177, 121)
+  val homeBtnColorHover = new Color(199, 146, 99)
 
   // Variables colors
   var leaveBtnColor = caseColor
+  var homeBtnColor = homeBtnColorNormal
   var newGameBtnColor = newGameBtnColorNormal
   var btnMenuColor = titleColor
+  var grid4Color = newGameBtnColorNormal
+  var grid8Color = caseColor
+  var grid10Color = caseColor
+  var grid16Color = caseColor
+  var grid20Color = caseColor
+  var goal128Color = caseColor
+  var goal256Color = caseColor
+  var goal512Color = caseColor
+  var goal1024Color = caseColor
+  var goal2048Color = newGameBtnColorNormal
 
   // Keyboard
   var pressedUp, pressedDown, pressedLeft, pressedRight = false
@@ -53,9 +66,7 @@ object Game_2048 extends App {
   var direction = "none"
   var isUpdating, win, start = false
   var incr = 0
-  var tab: Array[Array[Case]] = Array.fill(gridSize, gridSize)(new Case)
-  tab = getRandomCases(tab)
-  tab = getRandomCases(tab)
+  var tab: Array[Array[Case]] = _
   // -------------------------------------------------------------------------------------------------------------------
 
 
@@ -101,37 +112,183 @@ object Game_2048 extends App {
       val posy = e.getY
       gameState match {
         case "start" =>
-          if (posy < 392 && posy > 275 && posx < 450 && posx > 150) {
+          // New Game Button
+          if (posy < 422 && posy > 305 && posx < 450 && posx > 150) {
+            padding = 80 / gridSize
+            cellSize = (widthScreen - (2 * margin) - (gridSize * padding)) / gridSize
+            caseFactor = (cellSize.toDouble / 120.0)
+            tab = Array.fill(gridSize, gridSize)(new Case)
+            tab = getRandomCases(tab)
+            tab = getRandomCases(tab)
             gameState = "playing"
             start = true
           }
+
+          // Leave button
           if (posy < 570 && posy > 450 && posx < 450 && posx > 150) System.exit(0)
+
+          // Goals buttons
+          if (posy < 170 && posy > 130 && posx < 200 && posx > 160) {
+            goal128Color = newGameBtnColorNormal
+            goal256Color = caseColor
+            goal512Color = caseColor
+            goal1024Color = caseColor
+            goal2048Color = caseColor
+            winNumber = 128
+          }
+          if (posy < 170 && posy > 130 && posx < 260 && posx > 220) {
+            goal128Color = caseColor
+            goal256Color = newGameBtnColorNormal
+            goal512Color = caseColor
+            goal1024Color = caseColor
+            goal2048Color = caseColor
+            winNumber = 256
+          }
+          if (posy < 170 && posy > 130 && posx < 320 && posx > 280) {
+            goal128Color = caseColor
+            goal256Color = caseColor
+            goal512Color = newGameBtnColorNormal
+            goal1024Color = caseColor
+            goal2048Color = caseColor
+            winNumber = 512
+          }
+          if (posy < 170 && posy > 130 && posx < 380 && posx > 340) {
+            goal128Color = caseColor
+            goal256Color = caseColor
+            goal512Color = caseColor
+            goal1024Color = newGameBtnColorNormal
+            goal2048Color = caseColor
+            winNumber = 1024
+          }
+          if (posy < 170 && posy > 130 && posx < 440 && posx > 400) {
+            goal128Color = caseColor
+            goal256Color = caseColor
+            goal512Color = caseColor
+            goal1024Color = caseColor
+            goal2048Color = newGameBtnColorNormal
+            winNumber = 2048
+          }
+
+          // Grid buttons
+          if (posy < 245 && posy > 205 && posx < 200 && posx > 160) {
+            grid4Color = newGameBtnColorNormal
+            grid8Color = caseColor
+            grid10Color = caseColor
+            grid16Color = caseColor
+            grid20Color = caseColor
+            gridSize = 4
+          }
+          if (posy < 245 && posy > 205 && posx < 260 && posx > 220) {
+            grid4Color = caseColor
+            grid8Color = newGameBtnColorNormal
+            grid10Color = caseColor
+            grid16Color = caseColor
+            grid20Color = caseColor
+            gridSize = 8
+          }
+          if (posy < 245 && posy > 205 && posx < 320 && posx > 280) {
+            grid4Color = caseColor
+            grid8Color = caseColor
+            grid10Color = newGameBtnColorNormal
+            grid16Color = caseColor
+            grid20Color = caseColor
+            gridSize = 10
+          }
+          if (posy < 245 && posy > 205 && posx < 380 && posx > 340) {
+            grid4Color = caseColor
+            grid8Color = caseColor
+            grid10Color = caseColor
+            grid16Color = newGameBtnColorNormal
+            grid20Color = caseColor
+            gridSize = 16
+          }
+          if (posy < 245 && posy > 205 && posx < 440 && posx > 400) {
+            grid4Color = caseColor
+            grid8Color = caseColor
+            grid10Color = caseColor
+            grid16Color = caseColor
+            grid20Color = newGameBtnColorNormal
+            gridSize = 20
+          }
+
         case "menu" =>
           if (posy < menuBtnSize && posx > widthScreen - menuBtnSize) gameState = "playing"
-          if (posy < 392 && posy > 275 && posx < 450 && posx > 150) restart()
-          if (posy < 570 && posy > 450 && posx < 450 && posx > 150) System.exit(0)
+          if (posy < 422 && posy > 305 && posx < 450 && posx > 150) restart()
+          if (posy < 570 && posy > 450 && posx < 450 && posx > 150) {
+            restart()
+            gameState = "start"
+          }
+
         case "playing" =>
           if (posy < menuBtnSize && posx > widthScreen - menuBtnSize) gameState = "menu"
       }
     }
   })
-  gameWindow.addMouseMotionListener(new MouseMotionAdapter() {
+  gameWindow.addMouseMotionListener(m = new MouseMotionAdapter() {
     override def mouseMoved(e: MouseEvent): Unit = {
       val posx = e.getX
       val posy = e.getY
       gameState match {
         case "start" =>
-          if (posy < 392 && posy > 275 && posx < 450 && posx > 150) newGameBtnColor = newGameBtnColorHover
+          // New Game Button
+          if (posy < 422 && posy > 305 && posx < 450 && posx > 150) newGameBtnColor = newGameBtnColorHover
           else newGameBtnColor = newGameBtnColorNormal
+
+          // Leave Button
           if (posy < 570 && posy > 450 && posx < 450 && posx > 150) leaveBtnColor = leaveBtnColorHover
           else leaveBtnColor = caseColor
+
+          // Goal buttons
+          if (goal128Color != newGameBtnColorNormal) {
+            if (posy < 170 && posy > 130 && posx < 200 && posx > 160) goal128Color = Color.lightGray
+            else goal128Color = caseColor
+          }
+          if (goal256Color != newGameBtnColorNormal) {
+            if (posy < 170 && posy > 130 && posx < 260 && posx > 220) goal256Color = Color.lightGray
+            else goal256Color = caseColor
+          }
+          if (goal512Color != newGameBtnColorNormal) {
+            if (posy < 170 && posy > 130 && posx < 320 && posx > 280) goal512Color = Color.lightGray
+            else goal512Color = caseColor
+          }
+          if (goal1024Color != newGameBtnColorNormal) {
+            if (posy < 170 && posy > 130 && posx < 380 && posx > 340) goal1024Color = Color.lightGray
+            else goal1024Color = caseColor
+          }
+          if (goal2048Color != newGameBtnColorNormal) {
+            if (posy < 170 && posy > 130 && posx < 440 && posx > 400) goal2048Color = Color.lightGray
+            else goal2048Color = caseColor
+          }
+
+          // Grid buttons
+          if (grid4Color != newGameBtnColorNormal) {
+            if (posy < 245 && posy > 205 && posx < 200 && posx > 160) grid4Color = Color.lightGray
+            else grid4Color = caseColor
+          }
+          if (grid8Color != newGameBtnColorNormal) {
+            if (posy < 245 && posy > 205 && posx < 260 && posx > 220) grid8Color = Color.lightGray
+            else grid8Color = caseColor
+          }
+          if (grid10Color != newGameBtnColorNormal) {
+            if (posy < 245 && posy > 205 && posx < 320 && posx > 280) grid10Color = Color.lightGray
+            else grid10Color = caseColor
+          }
+          if (grid16Color != newGameBtnColorNormal) {
+            if (posy < 245 && posy > 205 && posx < 380 && posx > 340) grid16Color = Color.lightGray
+            else grid16Color = caseColor
+          }
+          if (grid20Color != newGameBtnColorNormal) {
+            if (posy < 245 && posy > 205 && posx < 440 && posx > 400) grid20Color = Color.lightGray
+            else grid20Color = caseColor
+          }
+
         case "menu" =>
           if (posy < menuBtnSize && posx > widthScreen - menuBtnSize) btnMenuColor = caseColor
           else btnMenuColor = titleColor
-          if (posy < 392 && posy > 275 && posx < 450 && posx > 150) newGameBtnColor = newGameBtnColorHover
+          if (posy < 422 && posy > 305 && posx < 450 && posx > 150) newGameBtnColor = newGameBtnColorHover
           else newGameBtnColor = newGameBtnColorNormal
-          if (posy < 570 && posy > 450 && posx < 450 && posx > 150) leaveBtnColor = leaveBtnColorHover
-          else leaveBtnColor = caseColor
+          if (posy < 570 && posy > 450 && posx < 450 && posx > 150) homeBtnColor = homeBtnColorHover
+          else homeBtnColor = homeBtnColorNormal
         case "playing" =>
           if (posy < menuBtnSize && posx > widthScreen - menuBtnSize) btnMenuColor = caseColor
           else btnMenuColor = titleColor
@@ -198,13 +355,13 @@ object Game_2048 extends App {
   def checkGame(tabValue: Array[Array[Case]]): Int = {
     var result = 0 // lose(2), win(1) playing(0)
 
-    var check2048, check0 = false
+    var checkWinNumber, check0 = false
     for (y <- tabValue.indices; x <- tabValue(y).indices) {
-      if (tabValue(y)(x).caseValue == winNumber) check2048 = true
+      if (tabValue(y)(x).caseValue == winNumber) checkWinNumber = true
       if (tabValue(y)(x).caseValue == 0) check0 = true
     }
 
-    if (check2048) result = 1
+    if (checkWinNumber) result = 1
     else {
       if (!check0) {
         var fusionPossible = false
@@ -324,13 +481,12 @@ object Game_2048 extends App {
     gameWindow.drawFillRect(margin * 4, menuScreen + margin * 4, widthScreen - (8 * margin), widthScreen - (8 * margin))
     // New Game Button
     gameWindow.setColor(newGameBtnColor)
-    gameWindow.drawFillRect(widthScreen / 4, menuScreen + heightScreen / 4, widthScreen / 2, heightScreen / 6)
-    gameWindow.drawFancyString(170, 350, "New Game", "Arial Rounded MT Bold", 1, 50, Color.white)
-    // Leave Button
-    gameWindow.setColor(leaveBtnColor)
+    gameWindow.drawFillRect(widthScreen / 4, menuScreen + heightScreen / 4 + 30, widthScreen / 2, heightScreen / 6)
+    gameWindow.drawFancyString(170, 380, "New Game", "Arial Rounded MT Bold", 1, 50, Color.white)
+    // Home Button
+    gameWindow.setColor(homeBtnColor)
     gameWindow.drawFillRect(widthScreen / 4, menuScreen + heightScreen / 2, widthScreen / 2, heightScreen / 6)
-    gameWindow.drawFancyString(225, 525, "Leave", "Arial Rounded MT Bold", 1, 50, Color.black)
-    gameWindow.setColor(if (win) Color.green else Color.darkGray)
+    gameWindow.drawFancyString(225, 525, "Home", "Arial Rounded MT Bold", 1, 50, Color.white)
     // Text win, lose, playing
     if (start) gameWindow.drawFancyString(110, 245, "Game running...", "Arial", 1, 50, neutralColor)
     else if (win) gameWindow.drawFancyString(190, 245, "You win !", "Arial", 1, 50, winColor)
@@ -342,10 +498,44 @@ object Game_2048 extends App {
     gameWindow.clear(gameBackColor)
     // Title
     gameWindow.drawFancyString(215, 85, "2048", "Arial Rounded MT Bold", 1, 70, titleColor)
+    gameWindow.drawFancyString(80, 160, "Goal", "Arial Rounded MT Bold", 1, 30, titleColor)
+    gameWindow.drawFancyString(85, 235, "Grid", "Arial Rounded MT Bold", 1, 30, titleColor)
+    // Goal buttons
+    gameWindow.setColor(goal128Color)
+    gameWindow.drawFillRect(160, 130, 40, 40)
+    gameWindow.drawFancyString(166, 155, "128", "Arial Rounded MT Bold", 1, 15, Color.black)
+    gameWindow.setColor(goal256Color)
+    gameWindow.drawFillRect(220, 130, 40, 40)
+    gameWindow.drawFancyString(226, 155, "256", "Arial Rounded MT Bold", 1, 15, Color.black)
+    gameWindow.setColor(goal512Color)
+    gameWindow.drawFillRect(280, 130, 40, 40)
+    gameWindow.drawFancyString(286, 155, "512", "Arial Rounded MT Bold", 1, 15, Color.black)
+    gameWindow.setColor(goal1024Color)
+    gameWindow.drawFillRect(340, 130, 40, 40)
+    gameWindow.drawFancyString(342, 155, "1024", "Arial Rounded MT Bold", 1, 15, Color.black)
+    gameWindow.setColor(goal2048Color)
+    gameWindow.drawFillRect(400, 130, 40, 40)
+    gameWindow.drawFancyString(402, 155, "2048", "Arial Rounded MT Bold", 1, 15, Color.black)
+    // Grid buttons
+    gameWindow.setColor(grid4Color)
+    gameWindow.drawFillRect(160, 205, 40, 40)
+    gameWindow.drawFancyString(175, 230, "4", "Arial Rounded MT Bold", 1, 15, Color.black)
+    gameWindow.setColor(grid8Color)
+    gameWindow.drawFillRect(220, 205, 40, 40)
+    gameWindow.drawFancyString(235, 230, "8", "Arial Rounded MT Bold", 1, 15, Color.black)
+    gameWindow.setColor(grid10Color)
+    gameWindow.drawFillRect(280, 205, 40, 40)
+    gameWindow.drawFancyString(290, 230, "10", "Arial Rounded MT Bold", 1, 15, Color.black)
+    gameWindow.setColor(grid16Color)
+    gameWindow.drawFillRect(340, 205, 40, 40)
+    gameWindow.drawFancyString(350, 230, "16", "Arial Rounded MT Bold", 1, 15, Color.black)
+    gameWindow.setColor(grid20Color)
+    gameWindow.drawFillRect(400, 205, 40, 40)
+    gameWindow.drawFancyString(410, 230, "20", "Arial Rounded MT Bold", 1, 15, Color.black)
     // New Game Button
     gameWindow.setColor(newGameBtnColor)
-    gameWindow.drawFillRect(widthScreen / 4, menuScreen + heightScreen / 4, widthScreen / 2, heightScreen / 6)
-    gameWindow.drawFancyString(170, 350, "New Game", "Arial Rounded MT Bold", 1, 50, Color.white)
+    gameWindow.drawFillRect(widthScreen / 4, menuScreen + heightScreen / 4 + 30, widthScreen / 2, heightScreen / 6)
+    gameWindow.drawFancyString(170, 380, "New Game", "Arial Rounded MT Bold", 1, 50, Color.white)
     // Leave Button
     gameWindow.setColor(leaveBtnColor)
     gameWindow.drawFillRect(widthScreen / 4, menuScreen + heightScreen / 2, widthScreen / 2, heightScreen / 6)
