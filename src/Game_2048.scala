@@ -6,21 +6,24 @@ import java.awt.event.{KeyAdapter, KeyEvent, MouseAdapter, MouseEvent, MouseMoti
 
 object Game_2048 extends App {
   // ----------------------------------------------------------------------------------------------------------Variables
-  // Screen
+  // Window Settings
   val widthScreen = 600
   val menuScreen = 100
   val heightScreen = widthScreen + menuScreen
   val gameWindow = new FunGraphics(widthScreen, heightScreen, "2048", true)
 
-  // Cells
+  // Game Settings
   val gridSize = 4
   val margin = 20
   val padding = 20
+  val menuBtnSize = 50
+  val winNumber = 2048
+
+  // Cells
   val cellSize = (widthScreen - (2 * margin) - (gridSize * padding)) / gridSize
   val caseFactor = (cellSize.toDouble / 120.0)
-  val menuBtnSize = 50
 
-  // Colors
+  // Fixed colors
   val gameBackColor = new Color(187, 173, 160)
   val menuBackColor = new Color(187, 173, 160, 208)
   val caseColor = new Color(202, 192, 180)
@@ -31,6 +34,7 @@ object Game_2048 extends App {
   val newGameBtnColorHover = new Color(199, 146, 99)
   val leaveBtnColorHover = new Color(217, 108, 108)
 
+  // Variables colors
   var leaveBtnColor = caseColor
   var newGameBtnColor = newGameBtnColorNormal
   var btnMenuColor = titleColor
@@ -196,7 +200,7 @@ object Game_2048 extends App {
 
     var check2048, check0 = false
     for (y <- tabValue.indices; x <- tabValue(y).indices) {
-      if (tabValue(y)(x).caseValue == 2048) check2048 = true
+      if (tabValue(y)(x).caseValue == winNumber) check2048 = true
       if (tabValue(y)(x).caseValue == 0) check0 = true
     }
 
