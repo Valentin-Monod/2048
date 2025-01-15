@@ -1,5 +1,4 @@
 
-
 # 2048
 Our 2048 game is a 2D grid-based game heavily inspired, if not fully modeled after, the original game of the same name. It was developed in Scala using the FunGraphics library. Random tiles spawn on the grid. Move them, combine them, and aim to reach your goals!
 
@@ -51,7 +50,7 @@ Our 2048 game is a 2D grid-based game heavily inspired, if not fully modeled aft
 - When you're ready, press `New game`
 
 
-![img.png](img.png)
+![img.png](readmeIMG/img.png)
 
 
 
@@ -59,7 +58,7 @@ Our 2048 game is a 2D grid-based game heavily inspired, if not fully modeled aft
 
 
 
-![img_1.png](img_1.png)
+![img_1.png](readmeIMG/img_1.png)
 
 
 
@@ -73,26 +72,26 @@ Our 2048 game is a 2D grid-based game heavily inspired, if not fully modeled aft
 
 
 
-![img_2.png](img_2.png)
+![img_2.png](readmeIMG/img_2.png)
 
 
 
 - Reach the goal you set to win the game
 
 
-![img_4.png](img_4.png)
+![img_4.png](readmeIMG/img_4.png)
 
 
 - You lose if you can’t make any more moves
 
 
-![img_5.png](img_5.png)
+![img_5.png](readmeIMG/img_5.png)
 
 
 - The pause menu in the top right corner can be clicked at any time
 
 
-![img_3.png](img_3.png)
+![img_3.png](readmeIMG/img_3.png)
 
 
   - From there, you can either start a `New game`, return `Home` to reset game modes, or exit the game using the `Leave` button
@@ -118,7 +117,7 @@ More practically, the board is made of a 2D `Array` of the custom type `Case`. M
 
 #### Functions
 
-### **`drawBackground()`**
+#### **`drawBackground()`**
 
 The **`drawBackground()`** function is responsible for creating the game's graphical interface each time it is called. It ensures that all visual elements on the game screen are correctly displayed, including the background, title, menu button, and game grid.
 
@@ -133,7 +132,7 @@ The **`drawBackground()`** function is responsible for creating the game's graph
 This function sets up the game's visual interface before the user interacts with it, creating a clean and intuitive game environment.
 
 
-### **`getImage()`**
+#### **`getImage()`**
 
 The **`getImage()`** function is responsible for retrieving the appropriate image for a specific tile in the game based on its value.
 
@@ -147,7 +146,7 @@ The **`getImage()`** function is responsible for retrieving the appropriate imag
 This function is crucial for displaying the correct image on each tile based on its value, ensuring that the visual representation of the game matches the tile values.
 
 
-### **`drawTab()`**
+#### **`drawTab()`**
 
 The **`drawTab()`** function is responsible for drawing the entire game grid (tab) on the screen.
 
@@ -163,7 +162,7 @@ The **`drawTab()`** function is responsible for drawing the entire game grid (ta
 
 This function is responsible for rendering the entire grid of tiles on the screen, visually representing the current state of the game.
 
-### **`getRandomCases()`**
+#### **`getRandomCases()`**
 
 The **`getRandomCases()`** function is responsible for generating a random empty tile on the game grid and assigning it a value (either `2` or `4`).
 
@@ -180,7 +179,7 @@ The **`getRandomCases()`** function is responsible for generating a random empty
 This function ensures that the game grid always contains an empty tile for the player to interact with, and randomly assigns a value to the new tile, either `2` or `4`.
 
 
-### **`checkGame()`**
+#### **`checkGame()`**
 
 The **`checkGame()`** function is responsible for checking the current state of the game, determining whether the player has won, lost, or can continue playing.
 
@@ -199,7 +198,7 @@ The **`checkGame()`** function is responsible for checking the current state of 
 This function determines the game's outcome by checking for a winning tile, empty tiles, and possible merges, allowing the game to transition between different states (win, lose, playing).
 
 
-### **`updateTab()`**
+#### **`updateTab()`**
 
 The **`updateTab()`** function is responsible for updating the state of the game grid after a move has been made. It moves and merges tiles based on the direction specified by the user (up, down, left, right).
 
@@ -226,7 +225,7 @@ The **`updateTab()`** function is responsible for updating the state of the game
 This function is essential for handling the mechanics of tile movement and merging in the game, ensuring the grid is updated correctly after each move and maintaining the game state.
 
 
-### **`drawMenu()`**
+#### **`drawMenu()`**
 
 The **`drawMenu()`** function is responsible for drawing the main menu of the game, which includes the background, buttons, and status text. This function is called when the game is in the "menu" state.
 
@@ -252,7 +251,7 @@ The **`drawMenu()`** function is responsible for drawing the main menu of the ga
 
 This function is crucial for rendering the game menu, allowing the player to see the current game status and interact with buttons to start a new game or return home.
 
-### **`drawStart()`**
+#### **`drawStart()`**
 
 The **`drawStart()`** function is responsible for rendering the initial screen of the game, which includes the title, goal selection buttons, grid size buttons, and options for starting or leaving the game. This function is called when the game is in the "start" state.
 
@@ -293,7 +292,7 @@ The **`drawStart()`** function is responsible for rendering the initial screen o
 This function is essential for rendering the initial screen of the game, allowing the player to select goals, grid sizes, and choose whether to start or leave the game.
 
 
-### **`restart()`**
+#### **`restart()`**
 
 The **`restart()`** function is responsible for resetting the game state and reinitializing the game board when the player chooses to restart the game. It sets up the game environment, including the grid and the initial game state, so the game can begin afresh.
 
